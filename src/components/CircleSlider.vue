@@ -20,18 +20,7 @@ import CircleSliderState from '../modules/circle_slider_state.js'
 export default {
   name: 'CircleSlider',
   created () {
-    this.stepsCount = 1 + (this.max - this.min) / this.stepSize
-    this.steps = Array.from({
-      length: this.stepsCount
-    }, (_, i) => this.min + i * this.stepSize)
-
-    this.circleSliderState = new CircleSliderState(this.steps, this.startAngleOffset, this.value)
-    this.angle = this.circleSliderState.angleValue
-    this.currentStepValue = this.circleSliderState.currentStep
-
-    let maxCurveWidth = Math.max(this.cpMainCircleStrokeWidth, this.cpPathStrokeWidth)
-    this.radius = (this.side / 2) - Math.max(maxCurveWidth, this.cpKnobRadius * 2) / 2
-    this.updateFromPropValue(this.value)
+    this.create()
   },
   mounted () {
     this.touchPosition = new TouchPosition(this.$refs._svg, this.radius, this.radius / 2)
@@ -297,11 +286,28 @@ export default {
       }
 
       window.requestAnimationFrame(animate)
+    },
+    create () {
+      this.stepsCount = 1 + (this.max - this.min) / this.stepSize
+      this.steps = Array.from({
+        length: this.stepsCount
+      }, (_, i) => this.min + i * this.stepSize)
+
+      this.circleSliderState = new CircleSliderState(this.steps, this.startAngleOffset, this.value)
+      this.angle = this.circleSliderState.angleValue
+      this.currentStepValue = this.circleSliderState.currentStep
+
+      let maxCurveWidth = Math.max(this.cpMainCircleStrokeWidth, this.cpPathStrokeWidth)
+      this.radius = (this.side / 2) - Math.max(maxCurveWidth, this.cpKnobRadius * 2) / 2
+      this.updateFromPropValue(this.value)
     }
   },
   watch: {
     value (val) {
       this.updateFromPropValue(val)
+    },
+    max (val) {
+      this.create()
     }
   }
 }
