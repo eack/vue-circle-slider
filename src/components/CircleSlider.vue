@@ -7,7 +7,7 @@
       @mouseup="handleMouseUp"
     >
       <g>
-        <circle :stroke="circleColor" fill="none" :stroke-width="cpMainCircleStrokeWidth" :cx="cpCenter" :cy="cpCenter" :r="radius"></circle>
+        <path :stroke="circleColor" fill="none" :stroke-width="cpMainCircleStrokeWidth" :d="cpPathDMax"></path>
         <path :stroke="progressColor" fill="none" :stroke-width="cpPathStrokeWidth" :d="cpPathD"></path>
         <circle :fill="knobColor" :r="cpKnobRadius" :cx="cpPathX" :cy="cpPathY"></circle>
       </g>
@@ -143,7 +143,7 @@ export default {
       return this.circleWidth || (this.side / 2) / this.circleWidthRel
     },
     cpPathDirection () {
-      return (this.cpAngle < 3 / 2 * Math.PI) ? 0 : 1
+      return (this.cpAngle - this.startAngleOffset < 3 / 2 * Math.PI) ? 0 : 1
     },
     cpPathX () {
       return this.cpCenter + this.radius * Math.cos(this.cpAngle)
@@ -159,13 +159,27 @@ export default {
     },
     cpPathD () {
       let parts = []
-      parts.push('M' + this.cpCenter)
-      parts.push(this.cpCenter + this.radius)
+      parts.push('M' + (this.cpCenter - 75))
+      parts.push(this.cpCenter + this.radius - 30.63)
       parts.push('A')
       parts.push(this.radius)
       parts.push(this.radius)
       parts.push(0)
       parts.push(this.cpPathDirection)
+      parts.push(1)
+      parts.push(this.cpCenter + this.radius * Math.cos((5.533175307179587 + Math.PI / 2)))
+      parts.push(this.cpCenter + this.radius * Math.sin((5.533175307179587 + Math.PI / 2)))
+      return parts.join(' ')
+    },
+    cpPathDMax () {
+      let parts = []
+      parts.push('M' + (this.cpCenter - 75))
+      parts.push(this.cpCenter + this.radius - 30.63)
+      parts.push('A')
+      parts.push(this.radius)
+      parts.push(this.radius)
+      parts.push(0)
+      parts.push(1)
       parts.push(1)
       parts.push(this.cpPathX)
       parts.push(this.cpPathY)
